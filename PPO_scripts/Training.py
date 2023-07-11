@@ -32,7 +32,7 @@ game_name = '-'
 path_to_final_model = '-'
 path_to_media = '-'
 
-ppo_policy_network, ppo_value_network, reward_tracker = ppo_clip(env, *ppo_hyperparameters)
+ppo_policy_network, ppo_value_network, reward_tracker = ppo_clip(device, env, *ppo_hyperparameters)
 
 # After training, save the models parameters
 name_final_model = game_name + '_final'

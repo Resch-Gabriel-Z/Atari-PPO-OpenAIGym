@@ -17,7 +17,7 @@ class Actor(nn.Module):
         self.softmax = nn.Softmax(dim=-1)
 
         self.fc = nn.Sequential(
-            nn.Linear(in_features=32 * 7 * 7, out_features=256),
+            nn.Linear(in_features=32 * 9 * 9, out_features=256),
             nn.ReLU(),
             nn.Linear(in_features=256, out_features=num_actions),
         )
@@ -26,7 +26,7 @@ class Actor(nn.Module):
         x = torch.as_tensor(x, dtype=torch.float32)
         conv_layers = self.conv(x)
         fc_input = self.flatten(conv_layers)
-        fc_input = fc_input.view(-1, 32 * 7 * 7)
+        fc_input = fc_input.view(-1, 32 * 9 * 9)
         fc_output = self.fc(fc_input)
         action = self.softmax(fc_output)
 
@@ -47,7 +47,7 @@ class Critic(nn.Module):
         self.flatten = nn.Flatten()
 
         self.fc = nn.Sequential(
-            nn.Linear(in_features=32 * 7 * 7, out_features=256),
+            nn.Linear(in_features=32 * 9 * 9, out_features=256),
             nn.ReLU(),
             nn.Linear(in_features=256, out_features=1),
         )
@@ -56,7 +56,7 @@ class Critic(nn.Module):
         x = torch.as_tensor(x, dtype=torch.float32)
         conv_layers = self.conv(x)
         fc_input = self.flatten(conv_layers)
-        fc_input = fc_input.view(-1, 32 * 7 * 7)
+        fc_input = fc_input.view(-1, 32 * 9 * 9)
         value = self.fc(fc_input)
 
         return value

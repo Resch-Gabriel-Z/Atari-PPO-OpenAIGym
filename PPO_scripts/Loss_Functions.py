@@ -2,14 +2,14 @@ import torch
 import torch.nn as nn
 
 
-def ppo_policy_loss(states, actions, returns, policy_network, value_network, epsilon, old_action_probs):
+def ppo_policy_loss(states, actions, returns, policy_network, value_network, epsilon, old_action_probs, device):
     policy_loss_list = []
     for t in range(len(states)):
-        state_tensor = torch.FloatTensor(states[t])
-        action_tensor = torch.LongTensor([actions[t]])
+        state_tensor = torch.FloatTensor(states[t]).unsqueeze(0).to(device)
+        action_tensor = torch.LongTensor([actions[t]]).unsqueeze(0).to(device)
         advantage = returns[t] - value_network(state_tensor).item()
 
-        old_action_probs = torch.tensor(old_action_probs)
+        old_action_probs = torch.tensor(old_action_probs).to(device)
         old_log_prob = torch.log(old_action_probs.squeeze(0)[action_tensor])
 
         action_probs = policy_network(state_tensor)
@@ -26,14 +26,14 @@ def ppo_policy_loss(states, actions, returns, policy_network, value_network, eps
     return policy_loss
 
 
-def compute_v_loss(states, returns, value_network):
+def compute_v_loss(device, states, returns, value_network):
     loss_list = []
     value_loss = nn.MSELoss()
 
     for t in range(len(states)):
-        state_tensor = torch.FloatTensor(states[t])
+        state_tensor = torch.FloatTensor(states[t]).unsqueeze(0).to(device)
 
-        target_value = torch.FloatTensor([returns[t]])
+        target_value = torch.FloatTensor([returns[t]]).unsqueeze(0).to(device)
         predicted_value = value_network(state_tensor)
 
         loss = value_loss(predicted_value, target_value)
