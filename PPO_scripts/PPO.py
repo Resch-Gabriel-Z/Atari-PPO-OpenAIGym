@@ -15,6 +15,8 @@ def ppo_clip(device, env, num_episodes, epsilon, alpha_policy, alpha_value, num_
     input_size = 1
     output_size = env.action_space.n
 
+    frames = 0
+
     ppo_policy_network = Actor(input_size, output_size).to(device)
     ppo_value_network = Critic(input_size).to(device)
 
@@ -25,8 +27,9 @@ def ppo_clip(device, env, num_episodes, epsilon, alpha_policy, alpha_value, num_
 
     for episode in tqdm(range(num_episodes)):
 
-        states, actions, rewards, old_action_probs = trajectory_collector(env, output_size, ppo_policy_network, device)
-
+        states, actions, rewards, old_action_probs, frame_plus = trajectory_collector(env, output_size,
+                                                                                      ppo_policy_network, device)
+        frames += frame_plus
         returns, advantages = compute_return_advantage(device, rewards, states, ppo_value_network)
 
         # Update the value network
@@ -48,6 +51,6 @@ def ppo_clip(device, env, num_episodes, epsilon, alpha_policy, alpha_value, num_
         optimizer_policy.step()
         reward_tracker.append(Rewards(reward=sum(rewards)))
         print()
-        print(episode, sum(rewards))
+        print(episode, sum(rewards), frames)
 
     return ppo_policy_network, ppo_value_network, reward_tracker

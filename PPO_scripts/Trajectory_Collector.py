@@ -12,6 +12,8 @@ def trajectory_collector(env, output_size, policy_network, device):
     actions = []
     rewards = []
     steps = 0
+
+    frame_incrementor = 0
     while not done and steps < hyperparameters['max_steps_per_trajectory']:
         states.append(state)
         state_tensor = torch.FloatTensor(state).unsqueeze(0).to(device=device)
@@ -22,8 +24,10 @@ def trajectory_collector(env, output_size, policy_network, device):
         steps += 1
         next_state, reward, done, *others = env.step(action)
 
+        frame_incrementor += env.unwrapped._frameskip
+
         actions.append(action)
         rewards.append(reward)
 
         state = next_state
-    return states, actions, rewards, action_probs
+    return states, actions, rewards, action_probs, frame_incrementor
