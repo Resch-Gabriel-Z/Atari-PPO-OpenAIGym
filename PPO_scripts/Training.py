@@ -25,10 +25,10 @@ ppo_hyperparameters = [hyperparameters['number_of_episodes'], hyperparameters['e
                        hyperparameters['lr_crit'], hyperparameters['num_epochs']]
 
 # Create the environment
-env = environment_maker('ALE/Pong-v5')
+env = environment_maker('-')
 
 # Create the meta data
-game_name = 'Pong'
+game_name = '-'
 path_to_final_model = '-'
 path_to_media = '-'
 
