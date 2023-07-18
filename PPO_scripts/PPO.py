@@ -50,7 +50,11 @@ def ppo_clip(device, env, num_episodes, epsilon, alpha_policy, alpha_value, num_
 
         optimizer_policy.step()
         reward_tracker.append(Rewards(reward=sum(rewards)))
-        print()
-        print(episode, sum(rewards), frames)
+        print(f'\n'
+              f'{"~" * 40}\n'
+              f'Episode: {episode + 1}\n'
+              f'Reward: {sum(rewards)}\n'
+              f'Frames: {frames}\n'
+              f'{"~" * 40}\n')
 
     return ppo_policy_network, ppo_value_network, reward_tracker

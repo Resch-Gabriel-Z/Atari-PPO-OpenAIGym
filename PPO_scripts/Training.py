@@ -3,7 +3,7 @@ import torch
 
 from Atari_Preprocessing import environment_maker
 from Hyperparameters import hyperparameters
-from PPO import ppo_clip
+from PPO import ppo_clip, Rewards
 
 
 def save_final_model(path, name, model):
@@ -34,8 +34,10 @@ path_to_media = '-'
 
 ppo_policy_network, ppo_value_network, reward_tracker = ppo_clip(device, env, *ppo_hyperparameters)
 
+rewards_bundled = Rewards(*zip(*reward_tracker))
+
 # After training, save the models parameters
 name_final_model = game_name + '_final'
 save_final_model(name=name_final_model, path=path_to_final_model, model=ppo_policy_network)
-df = pd.DataFrame({'cumulative rewards': reward_tracker})
-df.to_csv(f'{path_to_media}{game_name}.csv')
+df = pd.DataFrame({'cumulative rewards': rewards_bundled.reward})
+df.to_csv(f'{path_to_media}/{game_name}.csv')
